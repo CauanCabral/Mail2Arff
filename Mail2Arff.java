@@ -107,6 +107,7 @@ public class Mail2Arff {
 	protected void writeArff(String s) {
 		this.a.setOutput(s);
 		this.a.setData(this.columnNames, this.columnValues);
+		this.a.write();
 	}
 	
 	public void run() {
@@ -125,7 +126,6 @@ public class Mail2Arff {
 		}
 		
 		this.writeArff(this.output);
-		this.a.print();
 	}
 
 }

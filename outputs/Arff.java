@@ -38,6 +38,46 @@ public class Arff {
 		}
 	}
 	
+	public boolean write()
+	{
+		try
+		{
+			for(int i = 0, t = this.attributes.size(); i < t; i++)
+			{
+				this.output.append("@Attribute " + this.attributes.get(i) + "\n");
+			}
+			
+			this.output.append('\n');
+		
+			for(int i = 0, t = this.getMaxValuesLength(); i < t; i++)
+			{
+				for(int j = 0, k = this.attributes.size(); j < k; j++)
+				{
+					try {	
+						if(this.data.get(j) != null)
+						{
+							this.output.append(this.data.get(j).get(i) + ",");
+						}
+					}
+					catch(ArrayIndexOutOfBoundsException e)
+					{
+						
+						this.output.append(',');
+					}
+				}
+			
+				this.output.append('\n');
+			}
+		}
+		catch(IOException e)
+		{
+			System.err.println("Erro na escrita do arquivio de saída.");
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public void print()
 	{
 		
