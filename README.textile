@@ -1,0 +1,14 @@
+h1. Mail2Arff - Conversor de arquivo de email em arquivo Arff 
+
+Parser para conversão de um arquivo de email padrão (raw) em arquivo Arff (utilizado pelo WEKA)
+
+Escrevi esse pequeno conversor para auxiliar em meu trabalho de conclusão de curso.
+
+h2. Licença
+
+Não há nenhuma restrição ao uso do conversor.
+Estude e o utilize da forma que achar melhor.
+
+h2. Autor
+
+Cauan Cabral:"http://cauancabral.net"
