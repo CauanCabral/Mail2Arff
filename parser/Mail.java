@@ -6,8 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.TreeSet;
 
 import java.util.Iterator;
 
@@ -35,12 +34,12 @@ public class Mail {
 	/**
 	 * Uma tabela hash com  todas as chaves pre-definidas de um email e seu formato
 	 */
-	private HashSet<Key> especialKeys;
+	private TreeSet<Key> especialKeys;
 	
 	/**
 	 * Guarda o email destrinchado
 	 */
-	private HashSet<Key> m;
+	private TreeSet<Key> m;
 	
 	/**
 	 *
@@ -60,32 +59,31 @@ public class Mail {
 	
 	
 	protected void initAttributes() {
-		this.m = new HashSet<Key>();
-		this.especialKeys = new HashSet<Key>();
+		this.m = new TreeSet<Key>();
+		this.especialKeys = new TreeSet<Key>();
 		
-		this.especialKeys.add(new Key("Return-Path"));
-		this.especialKeys.add(new Key("Delivered-To"));
-		this.especialKeys.add(new Key("To"));
-		this.especialKeys.add(new Key("Cc"));
-		this.especialKeys.add(new Key("Bcc"));
-		this.especialKeys.add(new Key("From"));
-		this.especialKeys.add(new Key("Subject"));
-		this.especialKeys.add(new Key("In-Reply-To"));
-		this.especialKeys.add(new Key("Date"));
-		this.especialKeys.add(new Key("MIME-Version"));
-		this.especialKeys.add(new Key("Content-Transfer-Encoding"));
-		this.especialKeys.add(new Key("Date"));
-		this.especialKeys.add(new Key("Status"));
-		this.especialKeys.add(new Key("Content-Type"));
-		this.especialKeys.add(new Key("Received-SPF"));
+		this.especialKeys.add( new Key("Return-Path", "string", null) );
+		this.especialKeys.add(new Key("Delivered-To", "string"));
+		this.especialKeys.add(new Key("To", "string", null));
+		this.especialKeys.add(new Key("Cc", "string", null));
+		this.especialKeys.add(new Key("Bcc", "string", null));
+		this.especialKeys.add(new Key("From", "string", null));
+		this.especialKeys.add(new Key("Subject", "string", null));
+		this.especialKeys.add(new Key("In-Reply-To", "string", null));
+		this.especialKeys.add(new Key("MIME-Version", "string", null));
+		this.especialKeys.add(new Key("Content-Transfer-Encoding", "string", null));
+		this.especialKeys.add(new Key("Date", "date", "EEE, d MMM yyyy HH:mm:ss Z"));
+		this.especialKeys.add(new Key("Status", "string", null));
+		this.especialKeys.add(new Key("Content-Type", "string", null));
+		this.especialKeys.add(new Key("Received-SPF", "string", null));
 		
-		this.especialKeys.add(new Key("Content-Transfer-Encoding"));
-		this.especialKeys.add(new Key("Content-Disposition"));
+		this.especialKeys.add(new Key("Content-Transfer-Encoding", "string", null));
+		this.especialKeys.add(new Key("Content-Disposition", "string", null));
 		
-		this.especialKeys.add(new Key("X-MSMail-Priorit"));
-		this.especialKeys.add(new Key("X-Priority"));
-		this.especialKeys.add(new Key("X-Mailer"));
-		this.especialKeys.add(new Key("X-Status"));
+		this.especialKeys.add(new Key("X-MSMail-Priorit", "string", null));
+		this.especialKeys.add(new Key("X-Priority", "numeric", null));
+		this.especialKeys.add(new Key("X-Mailer", "string", null));
+		this.especialKeys.add(new Key("X-Status", "string", null));
 	}
 	
 	public void setSource ( String newSource ) {
@@ -112,7 +110,7 @@ public class Mail {
 		}
 	}
 	
-	public Set<Key> readMail()
+	public TreeSet<Key> readMail()
 	{
 		Key k;
 		
@@ -129,7 +127,6 @@ public class Mail {
 				}
 			}
 		}
-		
 		// le o body
 		if(this.isBody)
 		{
@@ -149,15 +146,26 @@ public class Mail {
 		try {
 			String[] tk = this.currentLine.split(":", 2);
 			
+			k = new Key(tk[0].trim(), tk[1].trim());
+			
 			// caso seja uma chave especial
-			if( this.especialKeys.contains(tk[0]) )
+			if( !this.especialKeys.contains(k) )
 			{
-				k = new Key(tk[0].trim(), tk[1].trim());
+				k = null;
 			}
-		} 
+		}
 		catch(PatternSyntaxException e)
 		{
 			System.err.println("Expressão Regular inválida");
+		}
+		catch(ClassCastException e)
+		{
+			System.err.println(e.getMessage());
+			k = null;
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+			k = null;
 		}
 		
 		return k;
@@ -176,7 +184,6 @@ public class Mail {
 				
 				l = this.source.readLine();
 			};
-			
 		}
 		catch(IOException e) {
 			System.err.println("Erro de leitura");
@@ -186,7 +193,7 @@ public class Mail {
 	}
 	
 	protected boolean nextKeyLine()
-	{	
+	{
 		try {
 			this.currentLine = this.source.readLine();
 		}
@@ -221,7 +228,7 @@ public class Mail {
 		}
 	}
 	
-	public Set<Key> getMail()
+	public TreeSet<Key> getMail()
 	{
 		return this.m;
 	}

@@ -1,8 +1,12 @@
 package outputs;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.io.FileWriter;
-import java.io.IOException;
+
 import java.util.Vector;
+
+import java.io.IOException;
 
 import types.Key;
 
@@ -61,7 +65,7 @@ public class Arff {
 					try {	
 						if(this.data.get(j) != null)
 						{
-							this.output.append(this.data.get(j).get(i).getValue() + ",");
+							this.output.append( StringEscapeUtils.escapeCsv(this.data.get(j).get(i).getValue()) + ",");
 						}
 					}
 					catch(ArrayIndexOutOfBoundsException e)
@@ -98,13 +102,12 @@ public class Arff {
 				try {	
 					if(this.data.get(j) != null)
 					{
-						System.out.print(this.data.get(j).get(i) + ",");
+						System.out.print(StringEscapeUtils.escapeCsv(this.data.get(j).get(i).getValue()) + ",");
 					}
 				}
 				catch(ArrayIndexOutOfBoundsException e)
 				{
-					
-					System.out.print(",");
+					System.out.print("?,");
 				}
 			}
 			

@@ -1,7 +1,7 @@
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import parser.Mail;
@@ -60,13 +60,13 @@ public class Mail2Arff {
 		this.output = output;
 	}
 	
-	protected Set<Key> readMail(File s) {
+	protected TreeSet<Key> readMail(File s) {
 		this.m.reset();
 		this.m.setSource(s);
 		return this.m.readMail();
 	}
 	
-	protected void combineMails( Set<Key> mail )
+	protected void combineMails( TreeSet<Key> mail )
 	{
 		Iterator<Key> it = mail.iterator();
 		
@@ -125,6 +125,8 @@ public class Mail2Arff {
 		{
 			this.combineMails( this.readMail(files[i]) );
 		}
+		
+		//this.m.print();
 		
 		this.writeArff(this.output);
 	}
