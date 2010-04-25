@@ -4,14 +4,15 @@ import types.Key;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.LineNumberReader;
-import java.util.HashMap;
+
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.Map.Entry;
+
+import java.util.Iterator;
+
+import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.regex.PatternSyntaxException;
 
 public class Mail {
@@ -34,12 +35,12 @@ public class Mail {
 	/**
 	 * Uma tabela hash com  todas as chaves pre-definidas de um email e seu formato
 	 */
-	private HashSet<String> especialKeys;
+	private HashSet<Key> especialKeys;
 	
 	/**
 	 * Guarda o email destrinchado
 	 */
-	private HashMap<String, Key> m;
+	private HashSet<Key> m;
 	
 	/**
 	 *
@@ -59,32 +60,32 @@ public class Mail {
 	
 	
 	protected void initAttributes() {
-		this.m = new HashMap<String, Key>();
-		this.especialKeys = new HashSet<String>();
+		this.m = new HashSet<Key>();
+		this.especialKeys = new HashSet<Key>();
 		
-		this.especialKeys.add("Return-Path");
-		this.especialKeys.add("Delivered-To");
-		this.especialKeys.add("To");
-		this.especialKeys.add("Cc");
-		this.especialKeys.add("Bcc");
-		this.especialKeys.add("From");
-		this.especialKeys.add("Subject");
-		this.especialKeys.add("In-Reply-To");
-		this.especialKeys.add("Date");
-		this.especialKeys.add("MIME-Version");
-		this.especialKeys.add("Content-Transfer-Encoding");
-		this.especialKeys.add("Date");
-		this.especialKeys.add("Status");
-		this.especialKeys.add("Content-Type");
-		this.especialKeys.add("Received-SPF");
+		this.especialKeys.add(new Key("Return-Path"));
+		this.especialKeys.add(new Key("Delivered-To"));
+		this.especialKeys.add(new Key("To"));
+		this.especialKeys.add(new Key("Cc"));
+		this.especialKeys.add(new Key("Bcc"));
+		this.especialKeys.add(new Key("From"));
+		this.especialKeys.add(new Key("Subject"));
+		this.especialKeys.add(new Key("In-Reply-To"));
+		this.especialKeys.add(new Key("Date"));
+		this.especialKeys.add(new Key("MIME-Version"));
+		this.especialKeys.add(new Key("Content-Transfer-Encoding"));
+		this.especialKeys.add(new Key("Date"));
+		this.especialKeys.add(new Key("Status"));
+		this.especialKeys.add(new Key("Content-Type"));
+		this.especialKeys.add(new Key("Received-SPF"));
 		
-		this.especialKeys.add("Content-Transfer-Encoding");
-		this.especialKeys.add("Content-Disposition");
+		this.especialKeys.add(new Key("Content-Transfer-Encoding"));
+		this.especialKeys.add(new Key("Content-Disposition"));
 		
-		this.especialKeys.add("X-MSMail-Priorit");
-		this.especialKeys.add("X-Priority");
-		this.especialKeys.add("X-Mailer");
-		this.especialKeys.add("X-Status");
+		this.especialKeys.add(new Key("X-MSMail-Priorit"));
+		this.especialKeys.add(new Key("X-Priority"));
+		this.especialKeys.add(new Key("X-Mailer"));
+		this.especialKeys.add(new Key("X-Status"));
 	}
 	
 	public void setSource ( String newSource ) {
@@ -111,7 +112,7 @@ public class Mail {
 		}
 	}
 	
-	public Set<Entry<String, Key>> readMail()
+	public Set<Key> readMail()
 	{
 		Key k;
 		
@@ -124,7 +125,7 @@ public class Mail {
 			
 				if( k != null)
 				{
-					this.m.put(k.getName(), k);
+					this.m.add(k);
 				}
 			}
 		}
@@ -132,7 +133,7 @@ public class Mail {
 		// le o body
 		if(this.isBody)
 		{
-			m.put("Body", new Key("Body", this.readBody()));
+			m.add(new Key("Body", this.readBody()));
 		}
 		
 		return this.getMail();
@@ -209,20 +210,20 @@ public class Mail {
 	
 	public void print()
 	{
-		Iterator<Entry<String, Key>> it = this.m.entrySet().iterator();
-		Entry<String, Key> k;
+		Iterator<Key> it = this.m.iterator();
+		Key k;
 		
 		while(it.hasNext())
 		{
 			k = it.next();
 			
-			System.out.println("Chave = " + k.getKey() +  " || Valor = " + k.getValue().getValue() );
+			System.out.println("Chave = " + k.getName() +  " || Valor = " + k.getValue() );
 		}
 	}
 	
-	public Set<Entry<String, Key>> getMail()
+	public Set<Key> getMail()
 	{
-		return this.m.entrySet();
+		return this.m;
 	}
 	
 	public void reset()

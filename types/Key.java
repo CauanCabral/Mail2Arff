@@ -1,13 +1,11 @@
 package types;
 
-public class Key {
-	//
-	// Fields
-	//
-
+public class Key implements Comparable<Key> {
+	
 	protected String name;
 	protected String value;
-	public String syntax;
+	protected String type;
+	protected String syntax;
 	
 	//
 	// Constructors
@@ -20,6 +18,11 @@ public class Key {
 	{
 		this.name = name;
 		this.value = value;
+	}
+	
+	public Key( String name )
+	{
+		this.name = name;
 	}
 
 	public String getName() {
@@ -36,5 +39,26 @@ public class Key {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getSyntax() {
+		return syntax;
+	}
+
+	public void setSyntax(String syntax) {
+		this.syntax = syntax;
+	}
+	
+	public int compareTo(Key o)
+	{
+		return this.name.compareTo(o.getName());
 	}
 }

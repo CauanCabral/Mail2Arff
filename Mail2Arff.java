@@ -3,7 +3,6 @@ import java.io.FileFilter;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
-import java.util.Map.Entry;
 
 import parser.Mail;
 import outputs.Arff;
@@ -20,7 +19,7 @@ public class Mail2Arff {
 	
 	
 	private Vector<String> columnNames;
-	private Vector<Vector<String>> columnValues;
+	private Vector<Vector<Key>> columnValues;
 	
 	/**
 	 * @param args
@@ -52,54 +51,56 @@ public class Mail2Arff {
 	 
 	public Mail2Arff(File dir, String output) {
 		this.m = new Mail();
-		this.a = new Arff();
+		this.a = new Arff("mails");
 		
 		this.columnNames = new Vector<String>();
-		this.columnValues = new Vector<Vector<String>>();
+		this.columnValues = new Vector<Vector<Key>>();
 		
 		this.origin = dir;
 		this.output = output;
 	}
 	
-	protected Set<Entry<String, Key>> readMail(File s) {
+	protected Set<Key> readMail(File s) {
 		this.m.reset();
 		this.m.setSource(s);
 		return this.m.readMail();
 	}
 	
-	protected void combineMails( Set<Entry<String, Key>> mail )
+	protected void combineMails( Set<Key> mail )
 	{
-		Iterator<Entry<String, Key>> it = mail.iterator();
+		Iterator<Key> it = mail.iterator();
 		
-		Entry<String,Key> cur;
+		Key cur;
 		
 		int colIndex;
-		Vector<String> temp;
+		Vector<Key> temp;
 		
 		while(it.hasNext())
 		{
 			cur = it.next();
-			colIndex = this.columnNames.indexOf(cur.getKey());
+			colIndex = this.columnNames.indexOf( cur.getName() );
 			
+			// caso coluna já exista
 			if(colIndex != -1)
 			{
-				temp = this.columnValues.elementAt(colIndex);
-				temp.add( cur.getValue().getValue() );
+				// apenas insere o valor na coluna apropriada
+				temp = this.columnValues.elementAt( colIndex );
+				temp.add( cur );
 			}
 			else
 			{
 				// adiciona nome da nova coluna
-				this.columnNames.add(cur.getKey());
+				this.columnNames.add( cur.getName() );
 				
 				// recupera o índice da coluna adicionada
-				colIndex = this.columnNames.indexOf(cur.getKey());
+				colIndex = this.columnNames.indexOf( cur.getName() );
 				
 				// adiciona um novo vetor para guardar o novo tipo de valor
-				this.columnValues.insertElementAt(new Vector<String>(), colIndex);
+				this.columnValues.insertElementAt(new Vector<Key>(), colIndex);
 				temp = this.columnValues.elementAt(colIndex);
 				
 				// adiciona o valor a nova coluna
-				temp.add( cur.getValue().getValue() );
+				temp.add( cur );
 			}
 		}
 	}

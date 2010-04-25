@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 
+import types.Key;
 
 /**
  * 
@@ -14,15 +15,17 @@ import java.util.Vector;
  */
 public class Arff {
 	
+	protected String relation;
 	protected Vector<String> attributes;
-	protected Vector<Vector<String>> data;
+	protected Vector<Vector<Key>> data;
 	protected FileWriter output;
 
-	public Arff()
+	public Arff( String r )
 	{
+		this.relation = r;
 	}
 	
-	public void setData(Vector<String> a, Vector<Vector<String>> d)
+	public void setData(Vector<String> a, Vector<Vector<Key>> d)
 	{
 		this.attributes = a;
 		this.data = d;
@@ -42,12 +45,14 @@ public class Arff {
 	{
 		try
 		{
+			this.output.append("@RELATION " + this.relation + "\n");
+			
 			for(int i = 0, t = this.attributes.size(); i < t; i++)
 			{
 				this.output.append("@Attribute " + this.attributes.get(i) + "\n");
 			}
 			
-			this.output.append('\n');
+			this.output.append("\n@DATA\n");
 		
 			for(int i = 0, t = this.getMaxValuesLength(); i < t; i++)
 			{
@@ -56,13 +61,13 @@ public class Arff {
 					try {	
 						if(this.data.get(j) != null)
 						{
-							this.output.append(this.data.get(j).get(i) + ",");
+							this.output.append(this.data.get(j).get(i).getValue() + ",");
 						}
 					}
 					catch(ArrayIndexOutOfBoundsException e)
 					{
 						
-						this.output.append(',');
+						this.output.append("?,");
 					}
 				}
 			
