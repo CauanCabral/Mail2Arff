@@ -151,7 +151,7 @@ public class Mail {
 			// caso seja uma chave especial
 			if( this.especialKeys.contains(tk[0]) )
 			{
-				k = new Key(tk[0], tk[1]);
+				k = new Key(tk[0].trim(), tk[1].trim());
 			}
 		} 
 		catch(PatternSyntaxException e)
