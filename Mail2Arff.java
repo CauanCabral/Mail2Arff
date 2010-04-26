@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.FileFilter;
+
 import java.util.Iterator;
+
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -18,7 +20,7 @@ public class Mail2Arff {
 	protected File origin;
 	
 	
-	private Vector<String> columnNames;
+	private Vector<Key> columnNames;
 	private Vector<Vector<Key>> columnValues;
 	
 	/**
@@ -53,7 +55,7 @@ public class Mail2Arff {
 		this.m = new Mail();
 		this.a = new Arff("mails");
 		
-		this.columnNames = new Vector<String>();
+		this.columnNames = new Vector<Key>();
 		this.columnValues = new Vector<Vector<Key>>();
 		
 		this.origin = dir;
@@ -66,8 +68,8 @@ public class Mail2Arff {
 		return this.m.readMail();
 	}
 	
-	protected void combineMails( TreeSet<Key> mail )
-	{
+	protected void combineMails( TreeSet<Key> mail ) {
+		
 		Iterator<Key> it = mail.iterator();
 		
 		Key cur;
@@ -78,7 +80,7 @@ public class Mail2Arff {
 		while(it.hasNext())
 		{
 			cur = it.next();
-			colIndex = this.columnNames.indexOf( cur.getName() );
+			colIndex = this.columnNames.indexOf( cur );
 			
 			// caso coluna já exista
 			if(colIndex != -1)
@@ -90,10 +92,10 @@ public class Mail2Arff {
 			else
 			{
 				// adiciona nome da nova coluna
-				this.columnNames.add( cur.getName() );
+				this.columnNames.add( cur );
 				
 				// recupera o índice da coluna adicionada
-				colIndex = this.columnNames.indexOf( cur.getName() );
+				colIndex = this.columnNames.indexOf( cur );
 				
 				// adiciona um novo vetor para guardar o novo tipo de valor
 				this.columnValues.insertElementAt(new Vector<Key>(), colIndex);

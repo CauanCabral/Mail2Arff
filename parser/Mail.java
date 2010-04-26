@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 
 import java.util.TreeSet;
+import java.util.LinkedList;
 
 import java.util.Iterator;
 
@@ -34,7 +35,7 @@ public class Mail {
 	/**
 	 * Uma tabela hash com  todas as chaves pre-definidas de um email e seu formato
 	 */
-	private TreeSet<Key> especialKeys;
+	private LinkedList<Key> especialKeys;
 	
 	/**
 	 * Guarda o email destrinchado
@@ -60,10 +61,10 @@ public class Mail {
 	
 	protected void initAttributes() {
 		this.m = new TreeSet<Key>();
-		this.especialKeys = new TreeSet<Key>();
+		this.especialKeys = new LinkedList<Key>();
 		
 		this.especialKeys.add( new Key("Return-Path", "string", null) );
-		this.especialKeys.add(new Key("Delivered-To", "string"));
+		this.especialKeys.add(new Key("Delivered-To", "string", null));
 		this.especialKeys.add(new Key("To", "string", null));
 		this.especialKeys.add(new Key("Cc", "string", null));
 		this.especialKeys.add(new Key("Bcc", "string", null));
@@ -110,8 +111,7 @@ public class Mail {
 		}
 	}
 	
-	public TreeSet<Key> readMail()
-	{
+	public TreeSet<Key> readMail() {
 		Key k;
 		
 		// leio as chaves do email
@@ -130,7 +130,10 @@ public class Mail {
 		// le o body
 		if(this.isBody)
 		{
-			m.add(new Key("Body", this.readBody()));
+			k = new Key("Body", this.readBody());
+			k.setType("string");
+			
+			m.add(k);
 		}
 		
 		return this.getMail();
@@ -139,9 +142,9 @@ public class Mail {
 	/**
 	 * @return Key
 	 */
-	private Key identifyKey()
-	{
+	private Key identifyKey() {
 		Key k = null;
+		int i;
 		
 		try {
 			String[] tk = this.currentLine.split(":", 2);
@@ -149,14 +152,20 @@ public class Mail {
 			k = new Key(tk[0].trim(), tk[1].trim());
 			
 			// caso seja uma chave especial
-			if( !this.especialKeys.contains(k) )
+			if( (i = this.especialKeys.indexOf(k)) == -1 )
 			{
 				k = null;
+			}
+			else
+			{
+				k.setSyntax(this.especialKeys.get(i).getSyntax());
+				k.setType(this.especialKeys.get(i).getType());
 			}
 		}
 		catch(PatternSyntaxException e)
 		{
 			System.err.println("Expressão Regular inválida");
+			k = null;
 		}
 		catch(ClassCastException e)
 		{
@@ -171,8 +180,7 @@ public class Mail {
 		return k;
 	}
 	
-	protected String readBody()
-	{
+	protected String readBody() {
 		StringBuffer b = new StringBuffer();
 		
 		try {
@@ -192,8 +200,7 @@ public class Mail {
 		return this.currentLine = b.toString();
 	}
 	
-	protected boolean nextKeyLine()
-	{
+	protected boolean nextKeyLine() {
 		try {
 			this.currentLine = this.source.readLine();
 		}
@@ -215,8 +222,7 @@ public class Mail {
 		return true;
 	}
 	
-	public void print()
-	{
+	public void print() {
 		Iterator<Key> it = this.m.iterator();
 		Key k;
 		
@@ -228,13 +234,15 @@ public class Mail {
 		}
 	}
 	
-	public TreeSet<Key> getMail()
-	{
+	public TreeSet<Key> getMail() {
 		return this.m;
 	}
 	
-	public void reset()
-	{
+	public LinkedList<Key> getHeaders() {
+		return this.especialKeys;
+	}
+	
+	public void reset() {
 		this.source = null;
 		this.currentLine = null;
 		this.isBody = false;

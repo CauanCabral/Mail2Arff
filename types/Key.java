@@ -7,9 +7,6 @@ public class Key implements Comparable<Key> {
 	protected String type;
 	protected String syntax;
 	
-	//
-	// Constructors
-	//
 	/**
 	 * @param	name
 	 * @param	value
@@ -74,13 +71,27 @@ public class Key implements Comparable<Key> {
 		return this.name.compareTo(o.getName());
 	}
 	
-	public boolean equals(Key o)
-	{	
-		return this.name.equals(o.getName());
+	public boolean equals(Object o) throws ClassCastException {
+		if(!(o instanceof Key))
+		{
+			throw new ClassCastException("Esperado um objeto da classe Key");
+		}
+		
+		if(this == o)
+		{
+			return true;
+		}
+		
+		Key tmp = (Key)o;
+		
+		return this.name.equals(tmp.getName());
 	}
 	
-	public String toString()
-	{
+	public int hashCode() {
+		return this.name.hashCode(); 
+	}
+	
+	public String toString() {
 		return "[" + this.name + " : " + this.value + "]";
 	}
 }
