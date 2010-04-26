@@ -73,7 +73,6 @@ public class Mail {
 		this.especialKeys.add(new Key("In-Reply-To", "string", null));
 		this.especialKeys.add(new Key("MIME-Version", "string", null));
 		this.especialKeys.add(new Key("Content-Transfer-Encoding", "string", null));
-		this.especialKeys.add(new Key("Date", "date", "EEE, d MMM yyyy HH:mm:ss Z"));
 		this.especialKeys.add(new Key("Status", "string", null));
 		this.especialKeys.add(new Key("Content-Type", "string", null));
 		this.especialKeys.add(new Key("Received-SPF", "string", null));
@@ -82,7 +81,7 @@ public class Mail {
 		this.especialKeys.add(new Key("Content-Disposition", "string", null));
 		
 		this.especialKeys.add(new Key("X-MSMail-Priorit", "string", null));
-		this.especialKeys.add(new Key("X-Priority", "numeric", null));
+		this.especialKeys.add(new Key("X-Priority", "string", null));
 		this.especialKeys.add(new Key("X-Mailer", "string", null));
 		this.especialKeys.add(new Key("X-Status", "string", null));
 	}

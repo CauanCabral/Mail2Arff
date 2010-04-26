@@ -3,12 +3,12 @@ package outputs;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import java.util.Vector;
-
+import java.io.UnsupportedEncodingException;
 import java.io.IOException;
+
+import java.util.Vector;
 
 import types.Key;
 
@@ -89,14 +89,7 @@ public class Arff {
 					try {
 						if(this.data.get(j) != null)
 						{
-							if(this.data.get(j).get(i).getType().equalsIgnoreCase("date"))
-							{
-								this.output.append( "\"" + this.data.get(j).get(i).getValue() + "\",");
-							}
-							else
-							{
-								this.output.append( this.arffString(this.data.get(j).get(i).getValue()) + ",");
-							}
+							this.output.append( this.arffString(this.data.get(j).get(i).getValue()) + ",");
 						}
 					}
 					catch(ArrayIndexOutOfBoundsException e)
