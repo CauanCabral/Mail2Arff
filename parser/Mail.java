@@ -1,3 +1,11 @@
+/**
+ * Classe para escrita de um arquivo Arff
+ * 
+ * @author Cauan Cabral
+ * @link cauancabral.net
+ * 
+ */
+
 package parser;
 
 import types.Key;
@@ -14,6 +22,14 @@ import java.util.Iterator;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.regex.PatternSyntaxException;
+
+/**
+ * Classe para leitura de arquivos de email
+ * 
+ * @author Cauan Cabral
+ * @link cauancabral.net
+ * 
+ */
 
 public class Mail {
 

@@ -1,3 +1,11 @@
+/**
+ * Classe para criação de arquivo Arff a partir de um conjunto de emails lidos
+ * 
+ * @author Cauan Cabral
+ * @link cauancabral.net
+ * 
+ */
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -9,7 +17,6 @@ import java.util.Vector;
 import parser.Mail;
 import outputs.Arff;
 import types.Key;
-
 
 public class Mail2Arff {
 	
