@@ -70,24 +70,26 @@ public class Arff {
 				tmp = this.attributes.get(i);
 				
 				aux = "@Attribute ";
-				aux.concat(tmp.getName());
-				aux.concat(" ");
-				aux.concat(tmp.getType());
+				aux = aux.concat(tmp.getName());
+				aux = aux.concat(" ");
+				aux = aux.concat(tmp.getType());
 				
 				if(tmp.getSyntax() != null)
 				{
-					aux.concat(" \"");
-					aux.concat(tmp.getSyntax());
-					aux.concat("\"");
+					aux = aux.concat(" \"");
+					aux = aux.concat(tmp.getSyntax());
+					aux = aux.concat("\"");
 				}
 				
-				aux.concat("\n");
+				aux = aux.concat("\n");
 				
 				this.output.append(aux);
+				
+				aux = null;
 			}
 			
 			this.output.append("\n@DATA\n");
-		
+			
 			for(int i = 0, t = this.getMaxValuesLength(); i < t; i++)
 			{
 				for(int j = 0, k = this.attributes.size(); j < k; j++)
@@ -96,8 +98,8 @@ public class Arff {
 						if(this.data.get(j) != null)
 						{
 							aux = "\"";
-							aux.concat( this.arffString(this.data.get(j).get(i).getValue()) );
-							aux.concat("\"");
+							aux = aux.concat( this.arffString(this.data.get(j).get(i).getValue()) );
+							aux = aux.concat("\"");
 							
 							this.output.append( aux );
 						}
@@ -164,18 +166,18 @@ public class Arff {
 			tmp = this.attributes.get(i);
 			
 			aux = "@Attribute ";
-			aux.concat(tmp.getName());
-			aux.concat(" ");
-			aux.concat(tmp.getType());
+			aux = aux.concat(tmp.getName());
+			aux = aux.concat(" ");
+			aux = aux.concat(tmp.getType());
 			
 			if(tmp.getSyntax() != null)
 			{
-				aux.concat(" \"");
-				aux.concat(tmp.getSyntax());
-				aux.concat("\"");
+				aux = aux.concat(" \"");
+				aux = aux.concat(tmp.getSyntax());
+				aux = aux.concat("\"");
 			}
 			
-			aux.concat("\n");
+			aux = aux.concat("\n");
 			
 			System.out.println(aux);
 		}
@@ -190,8 +192,8 @@ public class Arff {
 					if(this.data.get(j) != null)
 					{
 						aux = "\"";
-						aux.concat( this.arffString(this.data.get(j).get(i).getValue()) );
-						aux.concat("\"");
+						aux = aux.concat( this.arffString(this.data.get(j).get(i).getValue()) );
+						aux = aux.concat("\"");
 						
 						System.out.print( aux );
 					}
