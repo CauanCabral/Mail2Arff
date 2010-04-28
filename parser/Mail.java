@@ -10,17 +10,13 @@ package parser;
 
 import types.Key;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.LineNumberReader;
-
-import java.util.TreeSet;
+import java.util.Map.Entry;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import java.util.Iterator;
 
-import java.io.IOException;
-import java.io.FileNotFoundException;
+import java.util.NoSuchElementException;
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -31,32 +27,17 @@ import java.util.regex.PatternSyntaxException;
  * 
  */
 
-public class Mail {
-
-	/**
-	 * Armazena referência para o buffer com o arquivo fonte MiniJava
-	 */
-	protected LineNumberReader source;
+public class Mail extends Text {
 	
 	/**
 	 * Marca inicio da leitura do body
 	 */
 	private boolean isBody = false;
-	
-	/**
-	 * Guarda o buffer da linha que está sendo lida
-	 */
-	private String currentLine;
 
 	/**
 	 * Uma tabela hash com  todas as chaves pre-definidas de um email e seu formato
 	 */
 	private LinkedList<Key> especialKeys;
-	
-	/**
-	 * Guarda o email destrinchado
-	 */
-	private TreeSet<Key> m;
 	
 	/**
 	 *
@@ -76,7 +57,8 @@ public class Mail {
 	
 	
 	protected void initAttributes() {
-		this.m = new TreeSet<Key>();
+		super.initAttributes();
+		
 		this.especialKeys = new LinkedList<Key>();
 		
 		this.especialKeys.add( new Key("Return-Path", "string", null) );
@@ -102,31 +84,7 @@ public class Mail {
 		this.especialKeys.add(new Key("X-Status", "string", null));
 	}
 	
-	public void setSource ( String newSource ) {
-		try
-		{
-			this.source = new LineNumberReader(new FileReader(newSource));
-		}
-		catch(FileNotFoundException e)
-		{
-			System.err.println("Não foi possível abrir o arquivo fonte: " + e.getMessage());
-			System.exit(0);
-		}
-	}
-	
-	public void setSource ( File newSource ) {
-		try
-		{
-			this.source = new LineNumberReader(new FileReader(newSource));
-		}
-		catch(FileNotFoundException e)
-		{
-			System.err.println("Não foi possível abrir o arquivo fonte: " + e.getMessage());
-			System.exit(0);
-		}
-	}
-	
-	public TreeSet<Key> readMail() {
+	public HashMap<String, Key> readMail() {
 		Key k;
 		
 		// leio as chaves do email
@@ -138,18 +96,18 @@ public class Mail {
 			
 				if( k != null)
 				{
-					this.m.add(k);
+					this.m.put(k.getName(), k);
 				}
 			}
 		}
 		// le o body
 		if(this.isBody)
 		{
-			k = new Key("Body", this.readBody());
-			k.setType("string");
-			
-			m.add(k);
+			this.readBody();
 		}
+		
+		// fecha a leitura
+		this.source.close();
 		
 		return this.getMail();
 	}
@@ -195,36 +153,43 @@ public class Mail {
 		return k;
 	}
 	
-	protected String readBody() {
-		StringBuffer b = new StringBuffer();
+	protected void readBody() {
+		String tk;
+		Key k;
+		int len;
 		
-		try {
-			String l = this.source.readLine();
+		while( this.hasNext() ) {
+			tk = this.nextToken();
+			len = tk.length();
 			
-			while(l != null) {
-				b.append('\n');
-				b.append(l);
-				
-				l = this.source.readLine();
-			};
+			// ignoro tokens grandes (normalmente codificação de anexo)
+			if( len >= 59)
+				continue;
+			
+			//ignoro tokens pequenos que não sejam prefixo de url
+			if( len <= 3 && !tk.equals("www") )
+				continue;
+			
+			k = this.m.get(tk);
+			
+			if( k == null )
+			{
+				k = new Key(tk);
+			}
+			else
+			{
+				k.count++;
+			}
+			
+			this.m.put(tk, k);
 		}
-		catch(IOException e) {
-			System.err.println("Erro de leitura");
-		}
-		
-		return this.currentLine = b.toString();
 	}
 	
 	protected boolean nextKeyLine() {
 		try {
-			this.currentLine = this.source.readLine();
+			this.currentLine = this.source.nextLine();
 		}
-		catch(IOException e) {
-			System.err.println("Erro de leitura");
-		}
-		
-		if(this.currentLine == null )
-		{
+		catch(NoSuchElementException e) {
 			return false;
 		}
 		
@@ -238,18 +203,20 @@ public class Mail {
 	}
 	
 	public void print() {
-		Iterator<Key> it = this.m.iterator();
+		Iterator<Entry<String, Key>> it = this.m.entrySet().iterator();
+		Entry <String, Key> e;
 		Key k;
 		
 		while(it.hasNext())
 		{
-			k = it.next();
+			e = it.next();
+			k = e.getValue();
 			
-			System.out.println("Chave = " + k.getName() +  " || Valor = " + k.getValue() );
+			System.out.println("Chave = " + k.getName() +  " >> Valor = " + k.getValue() );
 		}
 	}
 	
-	public TreeSet<Key> getMail() {
+	public HashMap<String, Key> getMail() {
 		return this.m;
 	}
 	
@@ -258,9 +225,8 @@ public class Mail {
 	}
 	
 	public void reset() {
-		this.source = null;
-		this.currentLine = null;
+		super.reset();
+		
 		this.isBody = false;
-		this.m.clear();
 	}
 }

@@ -70,7 +70,16 @@ public class Arff {
 				tmp = this.attributes.get(i);
 				
 				aux = "@Attribute ";
-				aux = aux.concat(tmp.getName());
+				
+				if( tmp.getName().contains(" ") ) {
+					aux = aux.concat(" \"");
+					aux = aux.concat( tmp.getName() );
+					aux = aux.concat("\"");
+				}
+				else {
+					aux = aux.concat( tmp.getName() );
+				}
+				
 				aux = aux.concat(" ");
 				aux = aux.concat(tmp.getType());
 				
@@ -86,6 +95,7 @@ public class Arff {
 				this.output.append(aux);
 				
 				aux = null;
+				tmp = null;
 			}
 			
 			this.output.append("\n@DATA\n");
@@ -97,9 +107,16 @@ public class Arff {
 					try {
 						if(this.data.get(j) != null)
 						{
-							aux = "\"";
-							aux = aux.concat( this.arffString(this.data.get(j).get(i).getValue()) );
-							aux = aux.concat("\"");
+							tmp = this.data.get(j).get(i);
+							
+							if(tmp.getType().equals("numeric")) {
+								aux = tmp.count.toString();
+							}
+							else {
+								aux = "\"";
+								aux = aux.concat( this.arffString( tmp.getValue() ) );
+								aux = aux.concat("\"");
+							}	
 							
 							this.output.append( aux );
 						}

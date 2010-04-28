@@ -7,6 +7,8 @@ public class Key implements Comparable<Key> {
 	protected String type;
 	protected String syntax;
 	
+	public Integer count = 1;
+	
 	/**
 	 * @param	name
 	 * @param	value
@@ -14,10 +16,13 @@ public class Key implements Comparable<Key> {
 	public Key( String name, String value) {
 		this.name = name;
 		this.value = value;
+		this.type = "string";
 	}
 	
 	public Key( String name ) {
 		this.name = name;
+		this.value = name;
+		this.type = "numeric";
 	}
 	
 	public Key( String name, String type, String syntax) {

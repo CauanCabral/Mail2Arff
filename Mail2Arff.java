@@ -11,8 +11,9 @@ import java.io.FileFilter;
 
 import java.util.Iterator;
 
-import java.util.TreeSet;
+import java.util.HashMap;
 import java.util.Vector;
+import java.util.Map.Entry;
 
 import parser.Mail;
 import outputs.Arff;
@@ -69,17 +70,18 @@ public class Mail2Arff {
 		this.output = output;
 	}
 	
-	protected TreeSet<Key> readMail(File s) {
+	protected HashMap<String, Key> readMail(File s) {
 		this.m.reset();
 		this.m.setSource(s);
 		return this.m.readMail();
 	}
 	
-	protected void combineMails( TreeSet<Key> mail ) {
+	protected void combineMails( HashMap<String, Key> mail ) {
 		
-		Iterator<Key> it = mail.iterator();
+		Iterator<Entry<String, Key>> it = mail.entrySet().iterator();
+		Entry<String, Key> cur;
 		
-		Key cur;
+		Key k;
 		
 		int colIndex;
 		Vector<Key> temp;
@@ -87,29 +89,31 @@ public class Mail2Arff {
 		while(it.hasNext())
 		{
 			cur = it.next();
-			colIndex = this.columnNames.indexOf( cur );
+			k = cur.getValue();
+			
+			colIndex = this.columnNames.indexOf( k );
 			
 			// caso coluna já exista
 			if(colIndex != -1)
 			{
 				// apenas insere o valor na coluna apropriada
 				temp = this.columnValues.elementAt( colIndex );
-				temp.add( cur );
+				temp.add( k );
 			}
 			else
 			{
 				// adiciona nome da nova coluna
-				this.columnNames.add( cur );
+				this.columnNames.add( k );
 				
 				// recupera o índice da coluna adicionada
-				colIndex = this.columnNames.indexOf( cur );
+				colIndex = this.columnNames.indexOf( k );
 				
 				// adiciona um novo vetor para guardar o novo tipo de valor
 				this.columnValues.insertElementAt(new Vector<Key>(), colIndex);
 				temp = this.columnValues.elementAt(colIndex);
 				
 				// adiciona o valor a nova coluna
-				temp.add( cur );
+				temp.add( k );
 			}
 		}
 	}
@@ -135,7 +139,7 @@ public class Mail2Arff {
 			this.combineMails( this.readMail(files[i]) );
 		}
 		
-		//this.m.print();
+		System.out.println("Início da escrita");
 		
 		this.writeArff(this.output);
 	}
