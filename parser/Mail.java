@@ -162,8 +162,12 @@ public class Mail extends Text {
 			tk = this.nextToken();
 			len = tk.length();
 			
+			// ignoro tokens que possuem caracteres não-ascii
+			if( !Text.isPureAscii(tk) )
+				continue;
+			
 			// ignoro tokens grandes (normalmente codificação de anexo)
-			if( len >= 59)
+			if( len >= 40)
 				continue;
 			
 			//ignoro tokens pequenos que não sejam prefixo de url

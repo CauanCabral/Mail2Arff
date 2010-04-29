@@ -90,7 +90,7 @@ public class Mail2Arff {
 		{
 			cur = it.next();
 			k = cur.getValue();
-			
+						
 			colIndex = this.columnNames.indexOf( k );
 			
 			// caso coluna já exista

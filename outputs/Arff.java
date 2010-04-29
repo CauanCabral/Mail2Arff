@@ -26,6 +26,14 @@ public class Arff {
 	protected Vector<Key> attributes;
 	protected Vector<Vector<Key>> data;
 	protected Writer output;
+	
+	/**
+	 * Padrão do Arff é "US-ASCII" mas isso limita muito o uso
+	 * 
+	 * Em alguns casos ele aceita outra codificação, mas nada é garantido.
+	 * Outros valores suportados pelo Java(não necessariamente pelo Weka): "UTF-8", "ISO-8859-1"
+	 */
+	private String outputFormat = "US-ASCII";
 
 	public Arff( String r )
 	{
@@ -43,7 +51,7 @@ public class Arff {
 		try {
 			FileOutputStream fout = new FileOutputStream(f);
 			
-			this.output = new BufferedWriter( new OutputStreamWriter(fout, "US-ASCII") );	
+			this.output = new BufferedWriter( new OutputStreamWriter(fout, this.outputFormat) );	
 		}
 		catch (UnsupportedEncodingException e)
 		{
@@ -168,9 +176,11 @@ public class Arff {
 	
 	private String arffString( String s ) {
 		String out = s.replaceAll("\\s", " ");
-		
+				
 		return out.replace('"', '\'');
 	}
+	
+	
 	
 	public void print() {
 		String aux;

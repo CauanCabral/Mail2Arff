@@ -3,6 +3,8 @@ package parser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.Scanner;
 import java.util.HashMap;
 
@@ -24,6 +26,9 @@ public class Text {
 	 * Guarda os dados destrinchado
 	 */
 	protected HashMap<String, Key> m;
+	
+	static CharsetEncoder asciiEncoder = Charset.forName("US-ASCII").newEncoder();
+
 	
 	public Text() {
 		this.initAttributes();
@@ -64,6 +69,14 @@ public class Text {
 	
 	protected boolean hasNext() {
 		return this.source.hasNext();
+	}
+	
+	public static boolean isPureAscii(String v) {
+		return asciiEncoder.canEncode(v);
+	}
+	
+	public static boolean isAscii( String s ) {
+		return s.matches("[\\p{ASCII}]");
 	}
 	
 	public void reset() {
