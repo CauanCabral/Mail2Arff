@@ -34,6 +34,14 @@ public class Arff {
 	 * Outros valores suportados pelo Java(não necessariamente pelo Weka): "UTF-8", "ISO-8859-1"
 	 */
 	private String outputFormat = "US-ASCII";
+	
+	/**
+	 * Atributo que será usado como prefixo do nome dos atributos no arquivo Arff, afim de manter
+	 * compatibilidade com outros datasets
+	 * 
+	 * Caso não queira prefixo, atribua a string vazia aqui
+	 */
+	private String attrPrefix = "word_freq_";
 
 	public Arff( String r )
 	{
@@ -79,14 +87,11 @@ public class Arff {
 				
 				aux = "@Attribute ";
 				
-				if( tmp.getName().contains(" ") ) {
-					aux = aux.concat(" \"");
-					aux = aux.concat( tmp.getName() );
-					aux = aux.concat("\"");
+				if( tmp.getType().equals("real") ) {
+					 aux = aux.concat( this.attrPrefix );
 				}
-				else {
-					aux = aux.concat( tmp.getName() );
-				}
+				
+				aux = aux.concat( tmp.getName() );
 				
 				aux = aux.concat(" ");
 				aux = aux.concat(tmp.getType());
@@ -106,18 +111,22 @@ public class Arff {
 				tmp = null;
 			}
 			
+			// adiciono um atributo "class" que será populado pelo Weka
+			this.output.append("@Attribute class real\n");
+			
+			// inicia bloco de dados
 			this.output.append("\n@DATA\n");
 			
 			for(int i = 0, t = this.getMaxValuesLength(); i < t; i++)
 			{
-				for(int j = 0, k = this.attributes.size(); j < k; j++)
+				for(int j = 0, k = (this.attributes.size() + 1); j < k; j++)
 				{
 					try {
 						if(this.data.get(j) != null)
 						{
 							tmp = this.data.get(j).get(i);
 							
-							if(tmp.getType().equals("numeric")) {
+							if(tmp.getType().equals("real")) {
 								aux = tmp.count.toString();
 							}
 							else {

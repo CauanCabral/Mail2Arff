@@ -13,22 +13,16 @@ public class Key implements Comparable<Key> {
 	 * @param	name
 	 * @param	value
 	 */
-	public Key( String name, String value) {
-		this.name = name;
-		this.value = value;
-		this.type = "string";
-	}
-	
 	public Key( String name ) {
 		this.name = name;
 		this.value = name;
-		this.type = "numeric";
+		this.type = "real";
 	}
 	
-	public Key( String name, String type, String syntax) {
+	public Key( String name, String type) {
 		this.name = name;
+		this.value = name;
 		this.type = type;
-		this.syntax = syntax;
 	}
 
 	public String getName() {

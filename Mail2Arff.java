@@ -27,16 +27,21 @@ public class Mail2Arff {
 	protected String output;
 	protected File origin;
 	
-	
 	private Vector<Key> columnNames;
 	private Vector<Vector<Key>> columnValues;
+	
+	/**
+	 * Caso seja setado como TRUE, remove atributos do tipo
+	 * string, que não são suportados pelo algoritmo de Bayes
+	 */
+	private boolean toBayes = false;
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if(args.length != 2) {
-			System.err.println("Você deve passar um diretório e nome do arquivo alvo como parâmetro.\nAbortando.");
+		if(args.length <= 2) {
+			System.err.println("Você deve passar pelo menos um diretório e nome do arquivo alvo como parâmetro.\nAbortando.");
 			System.exit(0);
 		}
 		
@@ -48,11 +53,17 @@ public class Mail2Arff {
 			System.exit(0);
 		}
 		
-		System.out.println("Iniciando programa");
-		
 		Mail2Arff m2a = new Mail2Arff(dir, args[1]);
 		
-		System.out.println("Executando conversão");
+		try {
+			String alg = args[2];
+			
+			if(alg.equals("bayes"))
+				m2a.toBayes = true;
+		}
+		catch( IndexOutOfBoundsException e ) {}
+		
+		System.out.println("Iniciando programa");
 		
 		m2a.run();
 		
@@ -90,6 +101,9 @@ public class Mail2Arff {
 		{
 			cur = it.next();
 			k = cur.getValue();
+			
+			if(this.toBayes && k.getType().equals("string"))
+				continue;
 						
 			colIndex = this.columnNames.indexOf( k );
 			
@@ -131,6 +145,8 @@ public class Mail2Arff {
 				return file.isFile();
 			}
 		};
+		
+		System.out.println("Iniciando leitura dos emails");
 		
 		File[] files = this.origin.listFiles(fileFilter);
 		

@@ -61,27 +61,27 @@ public class Mail extends Text {
 		
 		this.especialKeys = new LinkedList<Key>();
 		
-		this.especialKeys.add( new Key("Return-Path", "string", null) );
-		this.especialKeys.add(new Key("Delivered-To", "string", null));
-		this.especialKeys.add(new Key("To", "string", null));
-		this.especialKeys.add(new Key("Cc", "string", null));
-		this.especialKeys.add(new Key("Bcc", "string", null));
-		this.especialKeys.add(new Key("From", "string", null));
-		this.especialKeys.add(new Key("Subject", "string", null));
-		this.especialKeys.add(new Key("In-Reply-To", "string", null));
-		this.especialKeys.add(new Key("MIME-Version", "string", null));
-		this.especialKeys.add(new Key("Content-Transfer-Encoding", "string", null));
-		this.especialKeys.add(new Key("Status", "string", null));
-		this.especialKeys.add(new Key("Content-Type", "string", null));
-		this.especialKeys.add(new Key("Received-SPF", "string", null));
+		this.especialKeys.add( new Key("Return-Path", "string") );
+		this.especialKeys.add(new Key("Delivered-To", "string"));
+		this.especialKeys.add(new Key("To", "string"));
+		this.especialKeys.add(new Key("Cc", "string"));
+		this.especialKeys.add(new Key("Bcc", "string"));
+		this.especialKeys.add(new Key("From", "string"));
+		this.especialKeys.add(new Key("Subject", "string"));
+		this.especialKeys.add(new Key("In-Reply-To", "string"));
+		this.especialKeys.add(new Key("MIME-Version", "string"));
+		this.especialKeys.add(new Key("Content-Transfer-Encoding", "string"));
+		this.especialKeys.add(new Key("Status", "string"));
+		this.especialKeys.add(new Key("Content-Type", "string"));
+		this.especialKeys.add(new Key("Received-SPF", "string"));
 		
-		this.especialKeys.add(new Key("Content-Transfer-Encoding", "string", null));
-		this.especialKeys.add(new Key("Content-Disposition", "string", null));
+		this.especialKeys.add(new Key("Content-Transfer-Encoding", "string"));
+		this.especialKeys.add(new Key("Content-Disposition", "string"));
 		
-		this.especialKeys.add(new Key("X-MSMail-Priorit", "string", null));
-		this.especialKeys.add(new Key("X-Priority", "string", null));
-		this.especialKeys.add(new Key("X-Mailer", "string", null));
-		this.especialKeys.add(new Key("X-Status", "string", null));
+		this.especialKeys.add(new Key("X-MSMail-Priorit", "string"));
+		this.especialKeys.add(new Key("X-Priority", "string"));
+		this.especialKeys.add(new Key("X-Mailer", "string"));
+		this.especialKeys.add(new Key("X-Status", "string"));
 	}
 	
 	public HashMap<String, Key> readMail() {
@@ -106,6 +106,8 @@ public class Mail extends Text {
 			this.readBody();
 		}
 		
+		this.readBody();
+		
 		// fecha a leitura
 		this.source.close();
 		
@@ -122,7 +124,7 @@ public class Mail extends Text {
 		try {
 			String[] tk = this.currentLine.split(":", 2);
 			
-			k = new Key(tk[0].trim(), tk[1].trim());
+			k = new Key(tk[0].trim());
 			
 			// caso seja uma chave especial
 			if( (i = this.especialKeys.indexOf(k)) == -1 )
@@ -131,6 +133,7 @@ public class Mail extends Text {
 			}
 			else
 			{
+				k.setValue(tk[1].trim());
 				k.setSyntax(this.especialKeys.get(i).getSyntax());
 				k.setType(this.especialKeys.get(i).getType());
 			}
@@ -159,19 +162,24 @@ public class Mail extends Text {
 		int len;
 		
 		while( this.hasNext() ) {
-			tk = this.nextToken();
+			// ignorar case do texto
+			tk = this.nextToken().toLowerCase();
 			len = tk.length();
 			
 			// ignoro tokens que possuem caracteres não-ascii
 			if( !Text.isPureAscii(tk) )
 				continue;
 			
+			// ignoro números
+			if( tk.matches("[0-9]*") )
+				continue;
+			
 			// ignoro tokens grandes (normalmente codificação de anexo)
 			if( len >= 40)
 				continue;
 			
-			//ignoro tokens pequenos que não sejam prefixo de url
-			if( len <= 3 && !tk.equals("www") )
+			// ignoro palavras com menos de três caracteres, que não sejam caracteres especiais
+			if( len < 3 && !(len == 1 && !Character.isLetterOrDigit(tk.codePointAt(0))) )
 				continue;
 			
 			k = this.m.get(tk);

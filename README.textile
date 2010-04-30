@@ -1,6 +1,7 @@
-h1. Mail2Arff - Conversor de arquivo de email em arquivo Arff 
+h1. Mail2Arff - Conversor de arquivo de email em arquivo Arff
 
-Parser para conversão de um arquivo de email padrão (raw) em arquivo Arff (utilizado pelo WEKA)
+Parser para conversão de um arquivo de email padrão (raw) em arquivo Arff (utilizado pelo WEKA).
+O arquivo Arff gerado contém como atributos a frequência de quase todas as palavras dos emails lidos.
 
 Escrevi esse pequeno conversor para auxiliar em meu trabalho de conclusão de curso.
 
@@ -25,10 +26,13 @@ bc. javac Mail2Arff.java
 
 3. Executar o conversor
 
+Criando um Arff genérico
 bc. java Mail2Arff "/pasta/com/os/emails/" "/pasta/destino/arquivo.arff"
 
-Dependendo da quantidade de emails o processamento pode levar alguns minutos (com 1500 mensagens ele leva menos de 1min, com 6000 mensagens ele já leva pouco mais de 2min, em meu computador)
+Criando um Arff para executar algorítmos de Bayes (não inclui no arquivo final atributos do tipo string)
+bc. java Mail2Arff "/pasta/com/os/emails/" "/pasta/destino/arquivo.arff" bayes
+
+Dependendo da quantidade de emails o processamento pode levar alguns minutos (com 1500 mensagens ele leva menos de 30seg, com 6000 mensagens ele já leva pouco mais de 1min, em meu computador)
  
 Em seguida você já pode usar o arquivo exportado no WEKA.
 
-*Obs.: Está versão apenas converte um email padrão para formato Arff, não fazendo nenhum outro tipo de pré-processamento.*
