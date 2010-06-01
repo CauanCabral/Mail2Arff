@@ -6,6 +6,8 @@
  * 
  */
 
+package converters;
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -19,7 +21,7 @@ import parser.Mail;
 import outputs.Arff;
 import types.Key;
 
-public class Mail2Arff {
+public class Mail2Arff{
 	
 	protected Mail m;
 	protected Arff a;
@@ -159,5 +161,4 @@ public class Mail2Arff {
 		
 		this.writeArff(this.output);
 	}
-
 }

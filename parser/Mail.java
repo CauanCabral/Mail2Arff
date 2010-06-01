@@ -35,7 +35,7 @@ public class Mail extends Text {
 	private boolean isBody = false;
 
 	/**
-	 * Uma tabela hash com  todas as chaves pre-definidas de um email e seu formato
+	 * Uma tabela hash com todas as chaves pre-definidas de um email e seu formato
 	 */
 	private LinkedList<Key> especialKeys;
 	
