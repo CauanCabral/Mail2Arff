@@ -26,6 +26,8 @@ public class Csv2Arff {
 	protected Csv c;
 	protected Arff a;
 	
+	protected int min;
+	
 	protected String output;
 	protected File origin;
 	
@@ -81,6 +83,7 @@ public class Csv2Arff {
 		
 		this.origin = dir;
 		this.output = output;
+		this.min = 4;
 	}
 	
 	protected Vector<HashMap<String, Key>> read(File s) {
@@ -90,7 +93,7 @@ public class Csv2Arff {
 		this.c.setSource(s);
 		
 		for(int i = 0; !this.c.isEOF; i++ ) {
-			csv.add(this.c.readCsv());
+			this.combine(this.c.readCsv());
 		}
 		
 		return csv;
@@ -112,6 +115,10 @@ public class Csv2Arff {
 			k = cur.getValue();
 			
 			if(this.toBayes && k.getType().equals("string"))
+				continue;
+			
+			// ignora palavras pouco frequentes
+			if(k.getType().equals("real") && k.count < this.min )
 				continue;
 						
 			colIndex = this.columnNames.indexOf( k );
@@ -161,9 +168,7 @@ public class Csv2Arff {
 		
 		for(int i = 0, t = files.length; i < t; i++)
 		{
-			for(HashMap<String, Key> h : this.read(files[i]) ) {
-				this.combine(h);
-			}
+			this.read(files[i]);
 		}
 		
 		System.out.println("Início da escrita");

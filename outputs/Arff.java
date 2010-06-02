@@ -111,9 +111,6 @@ public class Arff {
 				tmp = null;
 			}
 			
-			// adiciono um atributo "class" que será populado pelo Weka
-			this.output.append("@Attribute class real\n");
-			
 			// inicia bloco de dados
 			this.output.append("\n@DATA\n");
 			
@@ -129,11 +126,15 @@ public class Arff {
 							if(tmp.getType().equals("real")) {
 								aux = tmp.count.toString();
 							}
-							else {
+							else if(tmp.getType().equals("string")){
 								aux = "\"";
 								aux = aux.concat( this.arffString( tmp.getValue() ) );
 								aux = aux.concat("\"");
-							}	
+							}
+							else
+							{
+								aux = tmp.getValue();
+							}
 							
 							this.output.append( aux );
 						}
